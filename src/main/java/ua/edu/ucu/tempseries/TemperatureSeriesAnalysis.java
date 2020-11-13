@@ -1,5 +1,7 @@
 package ua.edu.ucu.tempseries;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.InputMismatchException;
 
@@ -8,10 +10,13 @@ public class TemperatureSeriesAnalysis {
     private final double ZERO = 0;
     private final double ABSOLUTEZERO = -273.15;
     private final int INCPARAM = 2;
+    @Getter
     private double[] temperatures;
     private double minimal = ABSOLUTEZERO;
     private double maximum = ABSOLUTEZERO;
+    @Getter
     private int size = 10;
+    @Getter
     private int actualSize = 0;
 
     public TemperatureSeriesAnalysis() {
@@ -19,12 +24,11 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
-        // TODO: test this
-        temperatures = new double[size];
-        minimal = temperatureSeries[0];
-        addTemps(temperatureSeries);
-//        for (double temp : temperatureSeries)
-//            addTemps(temp);
+        if (temperatureSeries.length != 0){
+            temperatures = new double[size];
+            minimal = temperatureSeries[0];
+            addTemps(temperatureSeries);
+        }
     }
 
     public double average() {
@@ -33,8 +37,6 @@ public class TemperatureSeriesAnalysis {
         for (int idx = 0; idx < actualSize; idx++)
             sum += temperatures[idx];
         // result = ( t1 + t2 + t3 + ... tn ) / n
-        System.out.println(Arrays.toString(temperatures));
-        System.out.println(actualSize);
         return sum / actualSize;
     }
 
@@ -79,13 +81,16 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double[] findTempsLessThen(final double tempValue) {
-        checkZeroSize("findTempsLessThen");
-        return Arrays.stream(temperatures).filter(x -> x < tempValue).toArray();
-    }
+        checkZeroSize("findTempsLessThen");;
+        return /*convert to stream to filter*/Arrays.stream(
+                /*filter only actual part of temps*/Arrays.copyOfRange(temperatures, 0, actualSize))
+                .filter(x -> x < tempValue).toArray();    }
 
     public double[] findTempsGreaterThen(double tempValue) {
         checkZeroSize("findTempsGreaterThen");
-        return Arrays.stream(temperatures).filter(x -> x > tempValue).toArray();
+        return /*convert to stream to filter*/Arrays.stream(
+                /*filter only actual part of temps*/Arrays.copyOfRange(temperatures, 0, actualSize))
+                .filter(x -> x > tempValue).toArray();
     }
 
     public TempSummaryStatistics summaryStatistics() {
@@ -109,7 +114,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     private void checkZeroSize(String operation){
-        if (size == 0)
+        if (actualSize == 0)
             throw new IllegalArgumentException("The size of array is zero: Can't execute " + operation);
     }
 
