@@ -15,7 +15,6 @@ public class TemperatureSeriesAnalysis {
     private double maximum = ABSOLUTE_ZERO;
     @Getter
     private int size = INC_PARAM;
-    @Getter
     private int actualSize = 0;
 
     public TemperatureSeriesAnalysis() {

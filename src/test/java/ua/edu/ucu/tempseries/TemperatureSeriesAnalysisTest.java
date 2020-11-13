@@ -261,6 +261,7 @@ public class TemperatureSeriesAnalysisTest {
         TempSummaryStatistics expectedStatistics = new TempSummaryStatistics(-1.10375, 4.643172238620919, -12.32, 3.1);
 
         assertTrue(summaryStatistics.equals(expectedStatistics));
+        assertTrue(summaryStatistics.hashCode() == expectedStatistics.hashCode());
 
     }
 
