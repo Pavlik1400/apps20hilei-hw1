@@ -6,14 +6,15 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class TemperatureSeriesAnalysis {
-    private final static double zero = 0;
-    private final static double absoluteZero = -273.15;
-    private final static int incParam = 2;
+    private static final double ZERO = 0;
+    private static final double ABSOLUTE_ZERO = -273.15;
+    private static final int INC_PARAM = 2;
+    private static final double DELTA = 0.000001;
     private double[] temperatures;
-    private double minimal = absoluteZero;
-    private double maximum = absoluteZero;
+    private double minimal = ABSOLUTE_ZERO;
+    private double maximum = ABSOLUTE_ZERO;
     @Getter
-    private int size = incParam;
+    private int size = INC_PARAM;
     @Getter
     private int actualSize = 0;
 
@@ -62,7 +63,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double findTempClosestToZero() {
-        return findTempClosestToValue(zero);
+        return findTempClosestToValue(ZERO);
     }
 
     public double findTempClosestToValue(double tempValue) {
@@ -72,16 +73,17 @@ public class TemperatureSeriesAnalysis {
         if (Math.abs(minimal - tempValue) < Math.abs(maximum - tempValue)) {
             closest = minimal;
         }
-        for (int idx = 0; idx < actualSize; idx++)
+        for (int idx = 0; idx < actualSize; idx++) {
             // first condition - just found closer;
             // second condition - found the same close but bigger temperature
-            if ((Math.abs(temperatures[idx] - tempValue) <
-                    Math.abs(closest - tempValue))
-                    || ((Math.abs(temperatures[idx] - tempValue)
-                    == Math.abs(closest - tempValue))
+            if ((Math.abs(temperatures[idx] - tempValue)
+                    < Math.abs(closest - tempValue))
+                    || ((Math.abs(Math.abs(temperatures[idx] - tempValue)
+                    - Math.abs(closest - tempValue)) < DELTA)
                     && temperatures[idx] > closest)) {
                 closest = temperatures[idx];
             }
+        }
         return closest;
     }
 
@@ -133,7 +135,7 @@ public class TemperatureSeriesAnalysis {
 
     private void checkAbsouleValue(double[] temps) {
         for (double temp : temps) {
-            if (temp < absoluteZero) {
+            if (temp < ABSOLUTE_ZERO) {
                 throw new InputMismatchException(
                         "Temperature less then absolute zero!"
                 );
@@ -142,7 +144,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     private double[] increaseArray() {
-        size *= incParam;
+        size *= INC_PARAM;
         double[] newArr = new double[size];
         System.arraycopy(temperatures, 0, newArr, 0, actualSize);
         return newArr;
