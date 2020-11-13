@@ -7,10 +7,9 @@ import java.util.InputMismatchException;
 
 // TODO: Documentation
 public class TemperatureSeriesAnalysis {
-    private final double ZERO = 0;
-    private final double ABSOLUTEZERO = -273.15;
-    private final int INCPARAM = 2;
-    @Getter
+    private final static double ZERO = 0;
+    private final static double ABSOLUTEZERO = -273.15;
+    private final static int INCPARAM = 2;
     private double[] temperatures;
     private double minimal = ABSOLUTEZERO;
     private double maximum = ABSOLUTEZERO;
@@ -129,6 +128,10 @@ public class TemperatureSeriesAnalysis {
         double[] newArr = new double[size];
         System.arraycopy(temperatures, 0, newArr, 0, actualSize);
         return newArr;
+    }
+
+    public double[] getTemperatures(){
+        return Arrays.copyOfRange(temperatures, 0, actualSize);
     }
 
 }
