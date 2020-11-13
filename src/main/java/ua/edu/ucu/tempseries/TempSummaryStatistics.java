@@ -1,9 +1,9 @@
 package ua.edu.ucu.tempseries;
 
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
 
-@Getter @EqualsAndHashCode
+@Getter
 public class TempSummaryStatistics {
     private final double avgTemp;
     private final double deviation;

@@ -260,8 +260,10 @@ public class TemperatureSeriesAnalysisTest {
         TempSummaryStatistics summaryStatistics = seriesAnalysis.summaryStatistics();
         TempSummaryStatistics expectedStatistics = new TempSummaryStatistics(-1.10375, 4.643172238620919, -12.32, 3.1);
 
-        assertTrue(summaryStatistics.equals(expectedStatistics));
-        assertTrue(summaryStatistics.hashCode() == expectedStatistics.hashCode());
+        assertEquals(summaryStatistics.getAvgTemp(), -1.10375, DELTA);
+        assertEquals(summaryStatistics.getDeviation(), 4.643172238620919, DELTA);
+        assertEquals(summaryStatistics.getMinTemp(), -12.32, DELTA);
+        assertEquals(summaryStatistics.getMaxTemp(), 3.1, DELTA);
 
     }
 
@@ -304,7 +306,6 @@ public class TemperatureSeriesAnalysisTest {
         double[] actualSeries = seriesAnalysis.getTemperatures();
         for (int i = 0; i < temperatureSeriesExpected.length; i++){
             assertEquals(actualSeries[i], temperatureSeriesExpected[i], DELTA);
-            System.out.println("hello");
         }
         assertEquals(seriesAnalysis.max(), 12.0, DELTA);
         assertEquals(seriesAnalysis.min(), -12.32, DELTA);
