@@ -299,13 +299,15 @@ public class TemperatureSeriesAnalysisTest {
         double[] temperatureSeries1 = {1.0, 2.0, 2.5, 3.1, -1.0, -1.8, -12.32, -2.31};
         TemperatureSeriesAnalysis seriesAnalysis = new TemperatureSeriesAnalysis(temperatureSeries1);
         seriesAnalysis.addTemps(5.0, 12.0, -3.12, 2.41);
-        double[] temperatureSeriesExpected = {1.0, 2.0, 2.5, 3.1, -1.0, -1.8, -12.32, -2.31, 5.0, 5.0, 12.0, 3.12, 2.41};
-        for (int i = 0; i < temperatureSeries1.length; i++){
-            assertEquals(seriesAnalysis.getTemperatures()[i], temperatureSeriesExpected[i], DELTA);
+        double[] temperatureSeriesExpected = {1.0, 2.0, 2.5, 3.1, -1.0, -1.8, -12.32, -2.31, 5.0, 12.0, -3.12, 2.41};
+        double[] actualSeries = seriesAnalysis.getTemperatures();
+        for (int i = 0; i < temperatureSeriesExpected.length; i++){
+            assertEquals(actualSeries[i], temperatureSeriesExpected[i], DELTA);
+            System.out.println("hello");
         }
         assertEquals(seriesAnalysis.max(), 12.0, DELTA);
         assertEquals(seriesAnalysis.min(), -12.32, DELTA);
-        assertEquals(seriesAnalysis.getSize(), 20);
+        assertEquals(seriesAnalysis.getSize(), 16);
     }
 
 

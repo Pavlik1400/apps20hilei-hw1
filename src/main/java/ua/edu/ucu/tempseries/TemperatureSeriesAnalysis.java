@@ -5,16 +5,15 @@ import lombok.Getter;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 
-// TODO: Documentation
 public class TemperatureSeriesAnalysis {
-    private final static double ZERO = 0;
-    private final static double ABSOLUTEZERO = -273.15;
-    private final static int INCPARAM = 2;
+    private final static double zero = 0;
+    private final static double absoluteZero = -273.15;
+    private final static int incParam = 2;
     private double[] temperatures;
-    private double minimal = ABSOLUTEZERO;
-    private double maximum = ABSOLUTEZERO;
+    private double minimal = absoluteZero;
+    private double maximum = absoluteZero;
     @Getter
-    private int size = 10;
+    private int size = incParam;
     @Getter
     private int actualSize = 0;
 
@@ -23,7 +22,7 @@ public class TemperatureSeriesAnalysis {
     }
 
     public TemperatureSeriesAnalysis(double[] temperatureSeries) {
-        if (temperatureSeries.length != 0){
+        if (temperatureSeries.length != 0) {
             temperatures = new double[size];
             minimal = temperatureSeries[0];
             addTemps(temperatureSeries);
@@ -33,8 +32,9 @@ public class TemperatureSeriesAnalysis {
     public double average() {
         checkZeroSize("average");
         double sum = 0;
-        for (int idx = 0; idx < actualSize; idx++)
+        for (int idx = 0; idx < actualSize; idx++) {
             sum += temperatures[idx];
+        }
         // result = ( t1 + t2 + t3 + ... tn ) / n
         return sum / actualSize;
     }
@@ -44,8 +44,9 @@ public class TemperatureSeriesAnalysis {
         double avg = average();
         double result = 0;
         // result = (t1-mean)^2 + (t2-mean)^2 + ,,, (tn-mean)^2
-        for (int idx = 0; idx < actualSize; idx ++)
-            result += Math.pow(temperatures[idx] - avg, 2);
+        for (int idx = 0; idx < actualSize; idx++) {
+            result += (temperatures[idx] - avg) * (temperatures[idx] - avg);
+        }
         // return sqrt(result/n) = deviation
         return Math.sqrt(result/actualSize);
     }
@@ -61,34 +62,41 @@ public class TemperatureSeriesAnalysis {
     }
 
     public double findTempClosestToZero() {
-        return findTempClosestToValue(ZERO);
+        return findTempClosestToValue(zero);
     }
 
     public double findTempClosestToValue(double tempValue) {
         checkZeroSize("findTempClosestToValue");
         // max ot min is on the maximum distance to zero
         double closest = maximum;
-        if (Math.abs(minimal - tempValue) < Math.abs(maximum - tempValue))
+        if (Math.abs(minimal - tempValue) < Math.abs(maximum - tempValue)) {
             closest = minimal;
+        }
         for (int idx = 0; idx < actualSize; idx++)
-            // first condition - just found closer; second condition - found the same close but bigger temperature
-            if ((Math.abs(temperatures[idx] - tempValue) < Math.abs(closest - tempValue)) ||
-                    ((Math.abs(temperatures[idx] - tempValue) == Math.abs(closest - tempValue))
-                            && temperatures[idx] > closest))
+            // first condition - just found closer;
+            // second condition - found the same close but bigger temperature
+            if ((Math.abs(temperatures[idx] - tempValue) <
+                    Math.abs(closest - tempValue))
+                    || ((Math.abs(temperatures[idx] - tempValue)
+                    == Math.abs(closest - tempValue))
+                    && temperatures[idx] > closest)) {
                 closest = temperatures[idx];
+            }
         return closest;
     }
 
     public double[] findTempsLessThen(final double tempValue) {
-        checkZeroSize("findTempsLessThen");;
+        checkZeroSize("findTempsLessThen");
         return /*convert to stream to filter*/Arrays.stream(
-                /*filter only actual part of temps*/Arrays.copyOfRange(temperatures, 0, actualSize))
+                /*filter only actual part of temps*/
+                Arrays.copyOfRange(temperatures, 0, actualSize))
                 .filter(x -> x < tempValue).toArray();    }
 
     public double[] findTempsGreaterThen(double tempValue) {
         checkZeroSize("findTempsGreaterThen");
         return /*convert to stream to filter*/Arrays.stream(
-                /*filter only actual part of temps*/Arrays.copyOfRange(temperatures, 0, actualSize))
+                /*filter only actual part of temps*/
+                Arrays.copyOfRange(temperatures, 0, actualSize))
                 .filter(x -> x > tempValue).toArray();
     }
 
@@ -99,38 +107,48 @@ public class TemperatureSeriesAnalysis {
 
     public int addTemps(double... temps) {
         checkAbsouleValue(temps);
-        for (double temp : temps){
+        for (double temp : temps) {
             temperatures[actualSize++] = temp;
-            if (actualSize == size)
+            if (actualSize == size) {
                 temperatures = increaseArray();
-            if (temp < minimal)
+            }
+            if (temp < minimal) {
                 minimal = temp;
-            else if (temp > maximum)
+            }
+            else if (temp > maximum) {
                 maximum = temp;
+            }
 
         }
         return actualSize;
     }
 
-    private void checkZeroSize(String operation){
-        if (actualSize == 0)
-            throw new IllegalArgumentException("The size of array is zero: Can't execute " + operation);
+    private void checkZeroSize(String operation) {
+        if (actualSize == 0) {
+            throw new IllegalArgumentException(
+                    "The size of array is zero: Can't execute " + operation
+            );
+        }
     }
 
-    private void checkAbsouleValue(double[] temps){
-        for (double temp : temps)
-            if (temp < ABSOLUTEZERO)
-                throw new InputMismatchException("Temperature less then absolute zero!");
+    private void checkAbsouleValue(double[] temps) {
+        for (double temp : temps) {
+            if (temp < absoluteZero) {
+                throw new InputMismatchException(
+                        "Temperature less then absolute zero!"
+                );
+            }
+        }
     }
 
-    private double[] increaseArray(){
-        size *= INCPARAM;
+    private double[] increaseArray() {
+        size *= incParam;
         double[] newArr = new double[size];
         System.arraycopy(temperatures, 0, newArr, 0, actualSize);
         return newArr;
     }
 
-    public double[] getTemperatures(){
+    public double[] getTemperatures() {
         return Arrays.copyOfRange(temperatures, 0, actualSize);
     }
 
